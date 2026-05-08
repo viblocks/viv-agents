@@ -133,3 +133,41 @@ Sequential ADRs documenting the design of this repo. New ADRs append; superseded
 **Why**: SRP + ISP. The `behavior` block is a fully-explicit contract surface for enforcement. Implicit defaults ("reviewers default to `modifies_source_code: false`") couple consumers to a convention that isn't in the contract. Explicit declaration removes ambiguity and lets enforcement layers read the contract literally without per-type logic.
 **Trade-off**: minor verbosity (4 lines per agent always present, even when all are `false`).
 **Source**: [[2026-05-08-typed-agents-extraction-design]] (post-review correction)
+
+---
+
+## ADR-012 — Stack/domain prefix in agent names, not framework prefix
+
+**Status**: Accepted (supersedes initial framework-prefix naming)
+**Decision**: Layered agents are named with the **stack/domain prefix**, not the framework prefix:
+- `backend-implementer`, `backend-crypto-implementer`, `backend-waas-implementer` (not `nestjs-implementer`, `nestjs-crypto-implementer`, `nestjs-waas-implementer`)
+- `frontend-implementer`, `frontend-crypto-implementer`, `frontend-waas-implementer` (not `react-implementer`, etc.)
+**Why**: DIP. The agent's identity is its **role** (implementer at the X tier of a stack), not its framework. Framework concrete (NestJS, React) is an implementation detail that lives in the consumed skills (`nestjs-backend`, `react-frontend`). Embedding the framework in the agent name couples agent identity to a project-specific choice — same anti-pattern that ADR-004 removes from `description` and `scope.paths`.
+**Trade-offs**:
+- ✅ Agent name is stable across framework migrations (e.g. NestJS → Fastify) — only the consumed skill changes
+- ✅ Symmetric with viv-skills domain organization (`backend/`, `frontend/` directories)
+- ✅ Smaller cardinality if multiple frameworks per domain are supported in the future
+- ⚠️ Loses framework specificity in the name — must read `skills:` to know framework
+**Alternatives considered**:
+- Framework prefix (`nestjs-*`, `react-*`) — rejected (couples name to current framework choice; cardinality grows per framework added).
+- No prefix (`implementer`, `crypto-implementer`) — rejected (ambiguous between backend and frontend domains).
+**Source**: [[2026-05-08-typed-agents-extraction-design]] (post-review correction; user observation about asymmetry between `nestjs-crypto-*` and `waas-backend-*` exposed the inconsistency)
+
+---
+
+## ADR-013 — Layered agents mirror viv-skills dependency stack
+
+**Status**: Accepted (supersedes initial single-agent-per-domain design)
+**Decision**: Backend and frontend domains have **layered agents** that mirror the `requires:` stack in viv-skills:
+- Backend: `backend-*` (consumes `nestjs-backend`) ← `backend-crypto-*` (adds `crypto-backend`) ← `backend-waas-*` (adds `waas-backend`)
+- Frontend: `frontend-*` (consumes `react-frontend`) ← `frontend-crypto-*` (adds `react-crypto-frontend`) ← `frontend-waas-*` (adds `waas-frontend`)
+**Why**: SRP + OCP + ISP applied at the agent level.
+- **SRP**: each tier has one reason to change. Crypto evolution affects only crypto agents; WaaS protocol changes affect only WaaS agents. The previous single-agent-per-domain had conditional sections like "WaaS Mode (only if waas-backend skill is loaded)" — that's two-reasons-to-change in one file.
+- **OCP**: extending for new WaaS patterns means editing the WaaS-tier agent, not modifying the base.
+- **ISP**: a non-crypto NestJS project vendors only `backend-*` (base tier) and doesn't load crypto-aware system prompt content unnecessarily.
+- **Symmetry with skills**: skills have explicit `requires:` chains. Agents now mirror this — the conceptual model is consistent across both repos.
+**Consequence**: cardinality doubles (8 → 16 agents). Each agent is smaller and focused. Layered review requires running multiple reviewers in sequence and aggregating findings — done manually today, automatable by a future `viv-workflows`.
+**Alternatives considered**:
+- Single agent per domain with conditional skill-loaded sections — rejected (SRP violation; the body had to embed cross-tier knowledge with conditional language).
+- Two tiers (drop the WaaS layer, treat WaaS as part of crypto) — rejected (WaaS is exfiltration-grade with distinct invariants; bundling with crypto loses the focused threat-model gate).
+**Source**: [[2026-05-08-typed-agents-extraction-design]] (post-review enhancement; user observation that "skills are layered backend / crypto / waas, agents should be too")
