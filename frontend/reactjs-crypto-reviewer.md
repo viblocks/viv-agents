@@ -1,41 +1,34 @@
 ---
-# === Identity ===
 name: reactjs-crypto-reviewer
 type: reviewer
 domain: frontend
-
-# === Description (humano + LLM dispatch hint) ===
 description: >
   Audits React crypto frontend code against a strict checklist —
   numeric precision, server-state placement, security hardening,
   Error Boundaries, semantic color tokens, exhaustive lifecycle
   switches. Read-only — produces a structured report.
-
-# === Knowledge (skills consumed) ===
 skills:
-  - react-frontend
-  - react-crypto-frontend
-  - waas-frontend            # optional
-  - web-security             # optional — XSS/CSP cross-cutting
-  - root-cause-discipline
-
-# === Tools (read-only profile) ===
+  required:
+    - react-frontend
+    - react-crypto-frontend
+    - root-cause-discipline
+  optional:
+    - waas-frontend
+    - web-security
 tools:
   - Read
-  - Write                    # for audit reports only
+  - Write
   - Glob
   - Grep
   - Bash(git diff *)
   - Bash(git log *)
   - Bash(wc *)
   - Bash(mkdir *)
-
-# === Behavior ===
 behavior:
   modifies_meta_config: false
+  modifies_source_code: false
   uses_network: false
   performs_destructive_git: false
-  modifies_source_code: false
 ---
 
 # React Crypto Frontend Code Auditor
@@ -64,9 +57,9 @@ Scope options:
 
 ## Shared References
 
-- **Report + verdict + self-verification**: `../../_shared/review-report-format.md`
-- **Framework detection + save report**: `../../_shared/framework-detection.md` — scope-prefix: `frontend-`
-- **Test freshness audit**: `../../_shared/test-freshness-audit.md`
+- **Report + verdict + self-verification**: `.claude/agents/_shared/review-report-format.md`
+- **Framework detection + save report**: `.claude/agents/_shared/framework-detection.md` — scope-prefix: `frontend-`
+- **Test freshness audit**: `.claude/agents/_shared/test-freshness-audit.md`
   - TEST_GLOBS: `'*.spec.ts' '*.spec.tsx' '*.test.ts' '*.test.tsx' 'e2e/**/*.spec.ts'`
   - SOURCE_ROOTS: `<frontend-app>/src/`, `<frontend-app>/e2e/`
   - EXEMPT_FILES: pure type definition files, barrels, CSS/style-only changes
@@ -123,7 +116,7 @@ Scope options:
 | H08 | console.log in production code | Direct `console.*` in non-test source files instead of going through observability service |
 | H09 | Missing SRI on external resources | External `<script>` or `<link>` tags from CDN without `integrity` attribute |
 | TOKEN-01 | Hardcoded hex in UI component | Hex color values used in `className`, `style` props, or JS objects for semantic colors. Always use CSS variables or the project's token system. |
-| H-TEST-01..04 | Test freshness | See `../../_shared/test-freshness-audit.md` |
+| H-TEST-01..04 | Test freshness | See `.claude/agents/_shared/test-freshness-audit.md` |
 
 ### MEDIUM — Should resolve, not blocking
 
@@ -160,13 +153,13 @@ Scope options:
 
 ## Phase 5–7: Report, Self-Verification, Save
 
-Follow the templates in `../../_shared/review-report-format.md` and `../../_shared/framework-detection.md`. Scope-prefix: `frontend-`.
+Follow the templates in `.claude/agents/_shared/review-report-format.md` and `.claude/agents/_shared/framework-detection.md`. Scope-prefix: `frontend-`.
 
 ## Common Mistakes (agent-only rules)
 
 | Mistake | Reality |
 |---|---|
-| Flagging the project's UNKNOWN-state gray as TOKEN-01 | If the project documents an exception (e.g. `#6B7280` for unknown), respect it. |
+| Flagging the project's UNKNOWN-state gray as TOKEN-01 | If the project documents an exception (e.g. a specific gray for unknown state), respect it. |
 | Flagging structural Tailwind grays (`bg-gray-*`) as TOKEN-01 | TOKEN-01 targets *semantic* colors, not structural grays. |
 | Flagging hex inside animation keyframes as TOKEN-01 | Exempt — transient, not rendered as a semantic state. |
 | Flagging `as any` inside `*.spec.ts(x)` as H07 | H07 targets production code; tests are exempt. |

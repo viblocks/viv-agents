@@ -8,10 +8,10 @@ Check these paths in order:
 
 | Check | Framework | Audit Directory |
 |-------|-----------|----------------|
-| `<docs-framework-state-file>` exists (e.g. an SDLC framework state file) | Project-specific framework | Read the framework state file to determine the current phase, then save under the framework's audit directory |
-| None of the above | No framework | `.claude/audits/` |
+| Consumer-defined framework signal exists (a state file or marker that identifies an SDLC framework) | Project-specific framework | Read the framework state file to determine the current phase, then save under the framework's audit directory |
+| None | No framework | `.claude/audits/` |
 
-Replace `<docs-framework-state-file>` with the consumer project's framework signal (e.g. `aidlc-docs/aidlc-state.md`, `process/state.json`). Each consumer can define their own detection rule in this file at vendor time.
+The consumer project defines its own detection rule by editing this file at vendor time (e.g. checking for a specific state file path, a marker directory, or an env var). If no framework is in use, the default `.claude/audits/` location applies.
 
 ## Step 2: Save the Report
 

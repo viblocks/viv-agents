@@ -1,39 +1,32 @@
 ---
-# === Identity ===
 name: security-reviewer
 type: reviewer
 domain: security
-
-# === Description (humano + LLM dispatch hint) ===
 description: >
   Audits code changes against an OWASP-aligned checklist —
   injection, access control, data integrity, configuration,
   XSS/frontend, supply chain. Conditional gate triggered by
   changes to security-sensitive paths (controllers, DTOs,
   guards, auth, frontend forms, dependencies).
-
-# === Knowledge (skills consumed) ===
 skills:
-  - web-security
-  - root-cause-discipline
-
-# === Tools (read-only profile) ===
+  required:
+    - web-security
+    - root-cause-discipline
+  optional: []
 tools:
   - Read
-  - Write                    # for audit reports only
+  - Write
   - Glob
   - Grep
   - Bash(git diff *)
   - Bash(git log *)
   - Bash(wc *)
   - Bash(mkdir *)
-
-# === Behavior ===
 behavior:
   modifies_meta_config: false
+  modifies_source_code: false
   uses_network: false
   performs_destructive_git: false
-  modifies_source_code: false
 ---
 
 # OWASP Security Reviewer
@@ -61,11 +54,11 @@ If all changed files fall into exclusions → report `security review: N/A — n
 
 ## Shared References
 
-This reviewer has its own structured output format (Phase 6 below) and does NOT use `_shared/review-report-format.md`. It DOES share:
+This reviewer has its own structured output format (Phase 6 below) and does NOT use `.claude/agents/_shared/review-report-format.md`. It DOES share:
 
-- **Framework detection + save report**: `../../_shared/framework-detection.md` — scope-prefix: `security-`
+- **Framework detection + save report**: `.claude/agents/_shared/framework-detection.md` — scope-prefix: `security-`
 
-**Before flagging any finding**, read Common Mistakes in `web-security/SKILL.md`. The False-Positive Guard in Phase 4 below mirrors the highest-signal mistakes from that skill.
+**Before flagging any finding**, read Common Mistakes in `web-security/SKILL.md`.
 
 **Scope boundary with `infra-devops-reviewer`**: infra hygiene (multi-stage builds, SHA pins, non-root user, healthchecks) lives in `infra-devops-reviewer`. This reviewer covers *security* posture of infra — CORS, exposed secrets in env, auth/guards, supply-chain. For overlap paths (Dockerfile, docker-compose, .env, .github/workflows), read the infra review first if present, and emit only security-specific findings to avoid duplicates.
 
@@ -87,7 +80,6 @@ For each changed file, determine which checklist categories apply:
 | `*main.ts`, `*bootstrap*`, `*.module.ts` with runtime env branches | Cat 4 (Misconfig — runtime-mutable env boundary) |
 | `package.json` | Cat 6 (Supply Chain) |
 | `*service*` (domain/application layer) | Cat 3 (Data Integrity) |
-| `*chain*`, `*enrichment*`, `*polling*` (blockchain data ingest) | Cat 3 (Data Integrity), Cat 6 (Crypto-Domain) |
 
 Only run checks from applicable categories. Skip irrelevant checks as N/A.
 
@@ -140,7 +132,6 @@ Produce the structured output:
 
 ### Finding Format
 
-For each finding:
 ```
 [S##] SEVERITY — file.ts:42
 → Found: `actual code snippet`
@@ -169,7 +160,7 @@ For each finding:
 
 ## Phase 7: Save Report
 
-Follow `../../_shared/framework-detection.md`. Scope-prefix for this reviewer: **`security-`**.
+Follow `.claude/agents/_shared/framework-detection.md`. Scope-prefix for this reviewer: **`security-`**.
 
 ## Important Constraints
 

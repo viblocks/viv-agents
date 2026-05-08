@@ -1,38 +1,31 @@
 ---
-# === Identity ===
 name: dev-testing-strategy-reviewer
 type: reviewer
 domain: testing
-
-# === Description (humano + LLM dispatch hint) ===
 description: >
   Audits testing strategy and CI/CD pipeline against four non-negotiable
   constraints — platform decoupling, suite uniformity, performance gates,
   test data isolation. Plus contract testing for event-driven systems.
   Read-only — produces a structured compliance report.
-
-# === Knowledge (skills consumed) ===
 skills:
-  - dev-testing-strategy
-  - root-cause-discipline
-
-# === Tools (read-only profile) ===
+  required:
+    - dev-testing-strategy
+    - root-cause-discipline
+  optional: []
 tools:
   - Read
-  - Write                    # for audit reports only
+  - Write
   - Glob
   - Grep
   - Bash(git diff *)
   - Bash(git log *)
   - Bash(wc *)
   - Bash(mkdir *)
-
-# === Behavior ===
 behavior:
   modifies_meta_config: false
+  modifies_source_code: false
   uses_network: false
   performs_destructive_git: false
-  modifies_source_code: false
 ---
 
 # Testing Strategy Auditor
@@ -82,12 +75,12 @@ Scope options:
 | C01 | Platform decoupling | `execSync`, `spawnSync`, or `child_process` with `docker`, `kubectl`, `terraform`, `helm` in test files |
 | C02 | Platform decoupling | Hardcoded container hostnames (e.g., `http://core:3000`, `postgres://db:5432`) in test files |
 | C03 | Platform decoupling | `docker exec` or `kubectl exec` for test setup/teardown |
-| C04 | Suite uniformity | CI workflow runs a script or command that doesn't exist in `Makefile` or `package.json` (`test:e2e:ci-only` type patterns) |
+| C04 | Suite uniformity | CI workflow runs a script or command that doesn't exist in `Makefile` or `package.json` |
 | C05 | Performance gate | `performance-gate` or `test-performance` step has `continue-on-error: true` or `if: false` or `\|\| true` |
 | C06 | Performance gate | Performance test step is missing from CI workflow entirely |
-| C07 | Performance gate | k6/Artillery thresholds are not defined in a versioned file in the repo (no `thresholds.js` or equivalent) |
+| C07 | Performance gate | k6/Artillery thresholds are not defined in a versioned file in the repo |
 | C08 | Test data isolation | Test file has no `afterEach`/`afterAll` cleanup block |
-| C09 | Test data isolation | Test cleanup is inside `afterEach` but wrapped in a condition that may skip it on failure |
+| C09 | Test data isolation | Test cleanup wrapped in a condition that may skip it on failure |
 | C10 | Test data isolation | Hardcoded entity IDs that could collide between parallel test runs |
 
 ### HIGH — Must resolve before production
@@ -107,9 +100,9 @@ Scope options:
 
 | ID | Constraint | What to Look For |
 |----|-----------|-----------------|
-| M01 | Test pyramid | E2E tests covering logic that should be unit tests (testing calculations, formatting via browser) |
-| M02 | Test pyramid | NestJS-style `Test.createTestingModule()` (or equivalent) used in pure domain logic unit tests (no I/O needed) |
-| M03 | Platform decoupling | `BASE_URL` hardcoded in test file instead of read from `process.env.BASE_URL` |
+| M01 | Test pyramid | E2E tests covering logic that should be unit tests |
+| M02 | Test pyramid | Framework-coupled testing module used in pure domain logic unit tests (no I/O needed) |
+| M03 | Platform decoupling | `BASE_URL` hardcoded in test file instead of read from env var |
 | M04 | CI pipeline | No `timeout-minutes` set on CI jobs (risk of infinite hang) |
 | M05 | CI pipeline | No artifact upload for test results (no historical traceability) |
 | M06 | CI pipeline | `concurrency` not configured — multiple CI runs don't cancel stale ones |
@@ -179,11 +172,6 @@ For every test file with database or API interactions:
 → Expected: Setup via API call to `${process.env.API_BASE_URL}/v1/test/seed`
 → Rule: NEVER reference docker-compose in test files
 
-[C06] Performance gate missing — .github/workflows/ci.yml
-→ Found: No job running load tooling
-→ Expected: Required `performance-gate` job with threshold enforcement
-→ Rule: NEVER skip the performance gate in CI
-
 ### Verdict
 [BLOCK / PASS WITH RESERVATIONS / PASS]
 ```
@@ -204,7 +192,7 @@ Before presenting the report:
 
 ## Phase 9: Save Report
 
-Follow `../../_shared/framework-detection.md`.
+Follow `.claude/agents/_shared/framework-detection.md`.
 
 ## Important Constraints
 

@@ -1,42 +1,35 @@
 ---
-# === Identity ===
 name: nestjs-crypto-reviewer
 type: reviewer
 domain: backend
-
-# === Description (humano + LLM dispatch hint) ===
 description: >
   Audits NestJS backend code with crypto/blockchain concerns against
   a strict checklist (SOLID, transactional outbox, idempotent consumers,
   BigInt arithmetic, circuit breakers, threat model for signing paths).
   Read-only — produces a structured report, never modifies source.
-
-# === Knowledge (skills consumed) ===
 skills:
-  - nestjs-backend
-  - crypto-backend
-  - prisma-patterns          # optional
-  - waas-backend             # optional — adds WaaS-specific checks
-  - web-security             # optional — for cross-cutting security checks
-  - root-cause-discipline
-
-# === Tools (read-only profile; no Write/Edit) ===
+  required:
+    - nestjs-backend
+    - crypto-backend
+    - root-cause-discipline
+  optional:
+    - prisma-patterns
+    - waas-backend
+    - web-security
 tools:
   - Read
-  - Write                     # for writing audit reports only
+  - Write
   - Glob
   - Grep
   - Bash(git diff *)
   - Bash(git log *)
   - Bash(wc *)
   - Bash(mkdir *)
-
-# === Behavior ===
 behavior:
   modifies_meta_config: false
+  modifies_source_code: false
   uses_network: false
   performs_destructive_git: false
-  modifies_source_code: false   # reviewer-specific: never edits non-audit files
 ---
 
 # NestJS Crypto Backend Code Auditor
@@ -67,9 +60,9 @@ Scope options:
 
 This reviewer follows shared formats. Read these before applying the checklist:
 
-- **Report + verdict + self-verification**: `../../_shared/review-report-format.md`
-- **Framework detection + save report**: `../../_shared/framework-detection.md` — scope-prefix: none
-- **Test freshness audit rules + detection steps**: `../../_shared/test-freshness-audit.md`
+- **Report + verdict + self-verification**: `.claude/agents/_shared/review-report-format.md`
+- **Framework detection + save report**: `.claude/agents/_shared/framework-detection.md` — scope-prefix: none
+- **Test freshness audit rules + detection steps**: `.claude/agents/_shared/test-freshness-audit.md`
   - TEST_GLOBS: `'*.spec.ts' '*.test.ts'`
   - SOURCE_ROOTS: `<backend-services>/src/`, `<shared-packages>/src/`
   - EXEMPT_FILES: `*.dto.ts` with only new optional fields, `*.module.ts` with only DI wiring, `index.ts` barrels
@@ -143,7 +136,7 @@ Identify each file's type and apply relevant checklist items:
 | H09 | Logger without redact | Logger configuration without redaction for sensitive fields |
 | H10 | Catch with any | `catch (e: any)` or `catch (error: any)` instead of `unknown` + type guard |
 | H11 | Entrypoint incorrect | Dockerfile production stage with `CMD ["npm", ...]` or `CMD ["yarn", ...]` instead of `CMD ["node", ...]` |
-| H-TEST-01..04 | Test freshness | See `../../_shared/test-freshness-audit.md` |
+| H-TEST-01..04 | Test freshness | See `.claude/agents/_shared/test-freshness-audit.md` |
 
 ### HIGH — WaaS extension
 
@@ -153,7 +146,7 @@ Identify each file's type and apply relevant checklist items:
 | H-WAAS-02 | Single-broadcaster | Broadcaster sending to only one provider. |
 | H-WAAS-03 | No per-(key, chain) lock | Signing path without per-`(keyRef, chain)` advisory lock. |
 | H-WAAS-04 | ChainId not in signing payload | EVM signing without EIP-155 chainId; pre-EIP-155 sigs accepted. |
-| H-WAAS-05 | Hardcoded confirmation threshold | `=== 1` or other literal in confirmation logic instead of config-driven per-amount-tier threshold. |
+| H-WAAS-05 | Hardcoded confirmation threshold | Literal in confirmation logic instead of config-driven per-amount-tier threshold. |
 | H-WAAS-06 | App-layer-only delegation rules | Sovereign-mode flow that enforces scope only in service code, not on-chain. |
 
 ### MEDIUM — Should resolve, not blocking
@@ -187,19 +180,19 @@ After file-by-file review, check:
 3. **Transaction boundaries**: Every business write + event must share a transaction
 4. **Health check verification**: Health endpoints must call real dependencies, not return hardcoded values
 5. **Module/service reuse audit (M09)**: For each new `.service.ts` or `*.module.ts` file in the diff, verify whether an analogous existing service could have been composed or extended.
-6. **Test Freshness Audit**: Follow detection steps in `../../_shared/test-freshness-audit.md`.
+6. **Test Freshness Audit**: Follow detection steps in `.claude/agents/_shared/test-freshness-audit.md`.
 
 ## Phase 5: Report Generation
 
-Follow the template in `../../_shared/review-report-format.md`. Use Cxx / Hxx / Mxx / Lxx IDs from this file's Phase 3 checklist.
+Follow the template in `.claude/agents/_shared/review-report-format.md`. Use Cxx / Hxx / Mxx / Lxx IDs from this file's Phase 3 checklist.
 
 ## Phase 6: Self-Verification
 
-Follow `../../_shared/review-report-format.md` § Self-Verification before presenting the report.
+Follow `.claude/agents/_shared/review-report-format.md` § Self-Verification before presenting the report.
 
 ## Phase 7: Save Report
 
-Follow `../../_shared/framework-detection.md`. Scope-prefix for this reviewer: **none**.
+Follow `.claude/agents/_shared/framework-detection.md`. Scope-prefix for this reviewer: **none**.
 
 ## Common Mistakes (agent-only rules)
 

@@ -220,3 +220,21 @@ Verified that:
 ## Sign-off
 
 Audit complete. Extraction proceeds to commit.
+
+---
+
+## Post-extraction review (2026-05-08, same day)
+
+A critical review was performed after the initial commit. It identified design issues in the extraction process itself (not knowledge losses). Fixes applied in a follow-up commit:
+
+- **Flat-file format** — agents renamed from `<domain>/<name>/AGENT.md` to `<domain>/<name>.md` to match Claude Code's runtime expectation. See ADR-008.
+- **Project-rooted shared paths** — `_shared/` references changed from relative `../../_shared/` to project-rooted `.claude/agents/_shared/`. See ADR-009.
+- **Skills schema** — `skills:` restructured from flat array (with YAML comments) to `{ required: [...], optional: [...] }` for machine-readability. See ADR-010.
+- **All `behavior` fields explicit** — every agent now declares all four behavior fields explicitly, removing implicit defaults. See ADR-011.
+- **Implementer's reference to reviewer's `_shared/`** — removed (the implementer doesn't consume those files).
+- **Prose comment in `infra-devops-implementer` frontmatter** — moved to body as a documented section.
+- **`framework-detection.md` AI-DLC reference** — generalized to "consumer-defined framework signal".
+- **README vendor instructions** — simplified (no rename gymnastics needed).
+- **Conditional logic in `nestjs-crypto-implementer.description`** — removed the "(when paired with WaaS skills)" qualifier; description now describes competence unconditionally.
+
+Knowledge content unchanged by these corrections — they are structural / format / DIP improvements, not content changes.
