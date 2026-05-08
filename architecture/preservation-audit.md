@@ -238,3 +238,33 @@ A critical review was performed after the initial commit. It identified design i
 - **Conditional logic in `nestjs-crypto-implementer.description`** — removed the "(when paired with WaaS skills)" qualifier; description now describes competence unconditionally.
 
 Knowledge content unchanged by these corrections — they are structural / format / DIP improvements, not content changes.
+
+---
+
+## Post-layering audit (2026-05-08, same day, after layered restructure)
+
+After splitting agents into base/crypto/waas tiers (see ADR-013), a third review pass found one real bug and applied the fix in the same commit cycle.
+
+### Findings
+
+**HIGH — backend constraint→check coverage gap (FIXED)**
+
+`backend-implementer` declared "Circuit breaker on external calls" as base constraint #4. But `backend-reviewer` had no corresponding check — the only circuit-breaker check (`H02`) lived in `backend-crypto-reviewer`, narrowed to blockchain RPC.
+
+Consequence (before fix): a non-crypto NestJS project audited only by `backend-reviewer` would not flag missing circuit breakers on third-party REST API calls.
+
+**Fix applied (same commit cycle):**
+- Added `H02 — Circuit breaker absent` to `backend-reviewer` as a general check (covers all external calls)
+- Removed `H02` from `backend-crypto-reviewer` (subsumed by the base check)
+- Added a note in `backend-crypto-reviewer` directing reviewers to chain `backend-reviewer` first
+
+This restores the implementer↔reviewer symmetry that the layering aims to preserve: every constraint declared in tier N has a corresponding check in tier N's reviewer.
+
+### Findings classified as acceptable
+
+- **Frontend constraint 3 (RHF + schema validation) without dedicated check**: covered indirectly by frontend-reviewer's C02/H07. No regression vs original viblocks-ai design (which also lacked a dedicated check). Not a layering bug.
+- **Cross-tier review chaining is manual today**: when a diff touches multiple tiers (e.g. base + crypto), the consumer must run multiple reviewers and aggregate. Documented as Known Limitation in README; intended to be automated by a future `viv-workflows`.
+
+### Verdict
+
+Post-layering structure is internally consistent after the fix. Knowledge content unchanged from earlier extractions — only structural/coverage corrections applied.

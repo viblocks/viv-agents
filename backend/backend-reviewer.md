@@ -85,6 +85,7 @@ Scope options:
 | Repository | `*repository*.ts`, `*repo*.ts` | C03, H06 |
 | Outbox processor | `*outbox*.ts` | C03, H06, M04 |
 | Controller | `*controller*.ts` | C07, H05, M02 |
+| External-service client | `*client*.ts`, `*-api.ts` (HTTP wrappers) | H02 |
 | Main bootstrap | `main.ts` | H03, H05, H11 |
 | Kafka producer | `*kafka*producer*.ts` | H07, M04 |
 | Domain aggregate | `*aggregate*.ts`, `*entity*.ts` | C02 |
@@ -108,6 +109,7 @@ Scope options:
 | ID | Rule | What to Look For |
 |----|------|-----------------|
 | H01 | Layer separation | Domain service importing infrastructure directly (without port/abstract class) |
+| H02 | Circuit breaker absent | Call to external service (third-party REST API, HTTP integration, RPC, webhook target) without circuit-breaker library wrapping. Applies to all outbound external calls, not just blockchain RPC. |
 | H03 | Tracing bootstrap order | Tracer SDK import that is NOT the first import in `main.ts` |
 | H04 | DI string tokens | `@Inject('STRING_TOKEN')` instead of abstract class as DI token |
 | H05 | Global filter without DI | `app.useGlobalFilters(new Filter())` instead of `{ provide: APP_FILTER, useClass }` |

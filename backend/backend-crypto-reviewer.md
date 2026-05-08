@@ -83,8 +83,8 @@ Scope options:
 
 | File Type | Pattern | Priority Checks |
 |-----------|---------|-----------------|
-| Polling service | `*polling*.ts`, `*poller*.ts` | C05, C01, H02, H06-CRYPTO, M05, M07 |
-| RPC/API client | `*rpc*.ts`, `*client*.ts` | C05, H02 |
+| Polling service | `*polling*.ts`, `*poller*.ts` | C05, C01, M05, M07 |
+| RPC/API client | `*rpc*.ts`, `*client*.ts` | C05 |
 | Multi-chain adapter | `*adapter*.ts`, `*chain*.ts` | C01, H-CHAIN-01, H-CHAIN-02 |
 | Reorg detector | `*reorg*.ts` | H-REORG-01 |
 | DTO with addresses | `*dto*.ts` | H-ADDR-01 |
@@ -102,9 +102,10 @@ Scope options:
 
 ### HIGH — Must resolve before production
 
+> Note: general "circuit breaker absent" check is `backend-reviewer/H02` and applies to all external calls (including blockchain RPC). This reviewer does not duplicate it. Run `backend-reviewer` in the chain to catch missing breakers.
+
 | ID | Rule | What to Look For |
 |----|------|-----------------|
-| H02 | Circuit breaker absent on RPC | Call to blockchain RPC without circuit breaker wrapping (resilience for chain endpoints) |
 | H-CHAIN-01 | Hardcoded chain logic | `if (chain === 'eth')` branches in domain layer instead of multi-chain adapter pattern |
 | H-CHAIN-02 | Single-broadcaster on writes | Write path sending tx to only one RPC provider (no redundancy) |
 | H-REORG-01 | Reorg detection missing | Polling service writing chain data without verifying block hash matches expected previous tip |
