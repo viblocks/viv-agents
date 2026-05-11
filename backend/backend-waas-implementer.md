@@ -2,6 +2,7 @@
 name: backend-waas-implementer
 type: implementer
 domain: backend
+business_domain: waas
 description: >
   Implements Wallet-as-a-Service backend code — KMS-backed signing
   pipelines, threat-model invariants, multi-tenant DB isolation, scoped

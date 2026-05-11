@@ -2,6 +2,7 @@
 name: frontend-crypto-reviewer
 type: reviewer
 domain: frontend
+business_domain: crypto
 description: >
   Audits crypto-aware frontend code — numeric precision, lifecycle
   state machines, degradation rules, SSE cache invalidation, BigInt

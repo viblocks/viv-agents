@@ -2,6 +2,7 @@
 name: dev-testing-strategy-reviewer
 type: reviewer
 domain: testing
+business_domain: cross-cutting
 description: >
   Audits testing strategy and CI/CD pipeline against four non-negotiable
   constraints — platform decoupling, suite uniformity, performance gates,

@@ -2,6 +2,7 @@
 name: frontend-crypto-implementer
 type: implementer
 domain: frontend
+business_domain: crypto
 description: >
   Implements crypto-aware frontend code — numeric precision (BigInt /
   bignumber.js), lifecycle state machines for transactions, degradation

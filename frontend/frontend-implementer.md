@@ -2,6 +2,7 @@
 name: frontend-implementer
 type: implementer
 domain: frontend
+business_domain: generic
 description: >
   Implements domain-agnostic frontend code — component architecture,
   state management (TanStack Query + Zustand), forms, error boundaries,

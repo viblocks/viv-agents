@@ -2,6 +2,7 @@
 name: backend-crypto-reviewer
 type: reviewer
 domain: backend
+business_domain: crypto
 description: >
   Audits crypto/blockchain backend code — BigInt arithmetic, RPC
   timeouts, reorg detection, address validation, multi-chain adapter

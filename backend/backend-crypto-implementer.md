@@ -2,6 +2,7 @@
 name: backend-crypto-implementer
 type: implementer
 domain: backend
+business_domain: crypto
 description: >
   Implements crypto/blockchain backend code — multi-chain adapters,
   reorg detection, BigInt arithmetic for monetary values, address

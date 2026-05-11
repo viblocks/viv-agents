@@ -2,6 +2,7 @@
 name: infra-devops-reviewer
 type: reviewer
 domain: devops
+business_domain: cross-cutting
 description: >
   Audits infrastructure, CI/CD, and deployment configuration —
   Dockerfile hygiene, compose health checks, GitHub Actions security
