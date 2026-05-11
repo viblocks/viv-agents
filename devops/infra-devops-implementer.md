@@ -2,6 +2,7 @@
 name: infra-devops-implementer
 type: implementer
 domain: devops
+business_domain: cross-cutting
 description: >
   Implements infrastructure, CI/CD, and deployment configuration —
   Dockerfiles, docker-compose files, GitHub Actions workflows,

@@ -2,6 +2,7 @@
 name: frontend-reviewer
 type: reviewer
 domain: frontend
+business_domain: generic
 description: >
   Audits domain-agnostic frontend code against a strict checklist —
   server-state placement, security hardening, Error Boundaries,

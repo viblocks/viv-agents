@@ -2,6 +2,7 @@
 name: frontend-waas-implementer
 type: implementer
 domain: frontend
+business_domain: waas
 description: >
   Implements Wallet-as-a-Service frontend UX — custody disclosure
   patterns, wallet creation flow, signing modals, escape-hatch flow,

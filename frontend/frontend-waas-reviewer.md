@@ -2,6 +2,7 @@
 name: frontend-waas-reviewer
 type: reviewer
 domain: frontend
+business_domain: waas
 description: >
   Audits Wallet-as-a-Service frontend UX — custody disclosure presence,
   signing modal lifecycle, escape-hatch confirmation gates, tenant

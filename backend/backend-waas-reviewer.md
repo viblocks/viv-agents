@@ -2,6 +2,7 @@
 name: backend-waas-reviewer
 type: reviewer
 domain: backend
+business_domain: waas
 description: >
   Audits Wallet-as-a-Service backend code against threat-model
   invariants — KMS isolation, signing pipeline correctness, low-S

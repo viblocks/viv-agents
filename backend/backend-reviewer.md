@@ -2,6 +2,7 @@
 name: backend-reviewer
 type: reviewer
 domain: backend
+business_domain: generic
 description: >
   Audits domain-agnostic backend code against a strict checklist —
   SOLID, transactional outbox, idempotent consumers, hexagonal layering,

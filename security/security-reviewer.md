@@ -2,6 +2,7 @@
 name: security-reviewer
 type: reviewer
 domain: security
+business_domain: cross-cutting
 description: >
   Audits code changes against an OWASP-aligned checklist —
   injection, access control, data integrity, configuration,

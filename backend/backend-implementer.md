@@ -2,6 +2,7 @@
 name: backend-implementer
 type: implementer
 domain: backend
+business_domain: generic
 description: >
   Implements domain-agnostic backend code — hexagonal modules, Kafka
   consumers, transactional outbox, circuit breakers, observability,
