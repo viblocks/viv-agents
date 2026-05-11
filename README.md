@@ -1,5 +1,15 @@
 # viv-agents
 
+> ⚠️ **Internal component of [viv-typed-agents](https://github.com/viblocks/viv-typed-agents).**
+>
+> The recommended install path is the typed-agents product, not this repo standalone:
+> ```bash
+> git clone https://github.com/viblocks/viv-typed-agents
+> ./viv-typed-agents/scripts/install.sh /path/to/your-project --tier 2
+> ```
+>
+> This repo is public for transparency and as a surgical-use escape hatch (`cp -r` a single agent file). See [ADR-RD-010](https://github.com/viblocks/viv-typed-agents/blob/main/architecture/decisions/ADR-RD-010-product-composition.md) for product composition rationale.
+
 Reusable Claude Code typed-agent definitions, organized by domain and **layered to mirror the viv-skills dependency stack**. Pure descriptors — no enforcement, no routing, no workflow orchestration. Companion repo to [viv-skills](https://github.com/viblocks/viv-skills).
 
 ## What's an agent (in this repo)?
